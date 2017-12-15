@@ -27,7 +27,6 @@ def index():
 	""" Index page
 	  Show list of `asks`, and cheer count of each ask
 	"""
-	# askid : cheer_id....  && cheerid : contents.... chaching
 	arcus_client = arcusdriver.get_client()
 	dataset = []
 
@@ -55,7 +54,8 @@ def index():
 					for id in result2 :
 						cheer_id_cache = arcus_client.lop_insert('askhy:cheer_id_' + str(id), -1, id)
 						cheer_cnt += 1
-
+    
+                    # add cheer_cnt into cache
 					arcus_client.set('askhy:cheer_cnt_'+str(id),cheer_cnt)			
 					dataset.append((id,message,ip_address,register_time,cheer_cnt))
 
@@ -80,7 +80,7 @@ def view_ask(ask_id):
 	arcus_client = arcusdriver.get_client()
 
 	with conn.cursor() as cursor :
-		# get ask contents
+		# get ask contents from db
 		cursor.execute("SELECT * FROM `ask` WHERE id = %s", (ask_id))
 		row = cursor.fetchone()
 
@@ -88,10 +88,12 @@ def view_ask(ask_id):
 		cheer_id_cache = arcus_client.lop_get('askhy:cheer_id_' + str(ask_id), (0, -1)).get_result()
 
 		result = []
+		
+		# get cheer_id from cache and select from db
 		for id in cheer_id_cache : 
 			cursor.execute("SELECT * from cheer WHERE id = " + str(id))
 			row2 = cursor.fetchall()
-
+        
 			for id, ask_id, message, ip_address, registertime in row2 : 
 				result.append((id, ask_id, message, ip_address, registertime))
 
@@ -121,7 +123,8 @@ def add_ask():
 
 	id = conn.insert_id()
 	conn.commit()
-
+    
+    # make cache and init
 	arcus_client.set('askhy:cheer_cnt_'+  str(id), 0)
 	arcus_client.lop_create('askhy:cheer_id_' + str(id), ArcusTranscoder.FLAG_INTEGER)
 
