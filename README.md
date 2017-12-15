@@ -4,7 +4,7 @@
 
 ## Installation Guide
 ---
-*참고사이트: http://www.yongbok.net/blog/arcus-open-source-cloud-cache-server/ 
+* 참고사이트: http://www.yongbok.net/blog/arcus-open-source-cloud-cache-server/ 
 #### 1. docker 이미지 pull 
 
 ```bash
