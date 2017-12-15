@@ -43,18 +43,17 @@ def index():
 				print(bcolors.WARNING + "Cache not exists. Create cache" + bcolors.ENDC)	
 				
 				with get_db().cursor() as cursor2 :
-					# get 
 					cursor2.execute("SELECT * FROM `cheer` WHERE ask_id = " + str(id))
 					result2 = cursor2.fetchall()
 
-					# add cheer_id into cache
+					# add to cheer_id cach
 					cheer_id_cache = arcus_client.lop_create('askhy:cheer_id_' + str(id))
+					# ca`che cheer contents
 					for item in result2 :
 						cheer_id_cache = arcus_client.lop_insert('askhy:cheer_id_' + str(id), -1, item[0])
 						cheer_cnt += 1
 
-						# add cheer contents into cache	
-						cheer_contents = arcus_client.lop_create('askhy:cheer_' + str(item[0]))
+						cheer_contents = arcus_client.lop_create('askhy:cheer_' + str(iem[0]))
 						for i in range(5) :
 							cheer_contents = arcus_client.lop_insert('askhy:cheer_'+str(item[0]), -1, item[i] )				
 
@@ -69,6 +68,7 @@ def index():
 	return render_template('main.html'
 		, dataset=dataset, 
 	)
+	
 
 @app.route('/ask/<int:ask_id>', methods=['GET'])
 def view_ask(ask_id):
@@ -81,18 +81,15 @@ def view_ask(ask_id):
 	arcus_client = arcusdriver.get_client()
 
 	with conn.cursor() as cursor :
-		# get ask contents
 		cursor.execute("SELECT * FROM `ask` WHERE id = %s", (ask_id, ))
 		row = cursor.fetchone()
 
-		# get cheer id from cache
 		cheer_id_cache = arcus_client.lop_get('askhy:cheer_id_' + str(ask_id), (0,-1))
 
 		result = []
 		for i in cheer_id_cache :
-
-			# get cheer contents from cache
 			cheer_contents = arcus_client.lop_get('ackhy:cheer_' + str(cache_id_cache[i]), (0,-1))
+			
 			for id, ask_id, message, ip_address, registertime in cheer_contents : 
 				result.append((id, ask_id, message, ip_address, registertime))
 			
