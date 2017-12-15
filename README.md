@@ -143,3 +143,8 @@ docker run -p 8080:80 \
 
 다음에 웹 브라우저를 열고 `localhost:8080` 에 접속하면 어플리케이션이 실행됩니다
 
+---
+
+## 프로젝트 nGrinder
+
+mysql, nbase-arc, arcus-memcached 의 성능 측정을 위해 ngrinder 를 사용했습니다. mysql 만 사용했을 때와 arcus-memcached를 캐시로 사용했을 때 성능을 테스트 했습니다.
