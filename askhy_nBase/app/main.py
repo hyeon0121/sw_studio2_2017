@@ -26,7 +26,6 @@ def index():
 	""" Index page
 	  Show list of `asks`, and cheer count of each ask
 	"""
-	# askid : cheer_id....  && cheerid : contents.... chaching
 	redis_client = redisdriver.get_client()
 	dataset = []
 
@@ -50,11 +49,12 @@ def index():
 
 					# add cheer_id into cache
 					cheer_cnt = 0
-					#cheer_id_cache = redis_client.lop_create('askhy:cheer_id_' + str(id))
+					
 					for id in result2 :
 						redis_client.lpush('askhy:cheer_id_' + str(id), int(id))
 						cheer_cnt += 1
-
+                    
+                    # add cheer_cnt into cache
 					redis_client.set('askhy:cheer_cnt_'+str(id),int(cheer_cnt))			
 					dataset.append((id,message,ip_address,register_time,int(cheer_cnt)))
 
@@ -87,7 +87,8 @@ def view_ask(ask_id):
 		cheer_id_cache = redis_client.lrange('askhy:cheer_id_' + str(ask_id), 0, -1)
 
 		result = []
-
+        
+        # get cheer contents from db with cheer id from cache
 		for id in cheer_id_cache : 
 			cursor.execute("SELECT * from cheer WHERE id = " + str(int(id)))
 			row2 = cursor.fetchall()
@@ -122,6 +123,7 @@ def add_ask():
 	id = conn.insert_id()
 	conn.commit()
 
+    # make cache and init
 	redis_client.set('askhy:cheer_cnt_'+  str(id), int(0))
 
 	return redirect("/#a" + str(id)) 
