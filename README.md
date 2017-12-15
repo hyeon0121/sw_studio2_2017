@@ -15,8 +15,8 @@ docker pull ruo91/arcus
 
 ```bash
 docker run -d --name="arcus-admin" -h "arcus" ruo91/arcus
-
 ```
+
 - Memcached
 
 ```bash
@@ -26,6 +26,7 @@ docker run -d --name="arcus-memcached-3" -h "memcached-3" ruo91/arcus:memcached
 ```
 
 3. 1 Zookeeper 설정
+
 ```bash
 root@arcus:/opt/arcus/scripts# sed -i 's/127.0.0.1:2181/172.17.0.3:2181,172.17.0.4:2181,172.17.0.5:2181/g' arcus.sh
 ```
@@ -172,5 +173,8 @@ docker run -p 8080:80 \
 ## 프로젝트 nGrinder
 
 mysql, nbase-arc, arcus-memcached 의 성능 측정을 위해 ngrinder 를 사용했습니다. mysql 만 사용했을 때와 arcus-memcached를 캐시로 사용했을 때 성능을 테스트 했습니다.
-
+1. mysql 만 사용했을때 agent = 1, vuser 10 설정
 ![mysql_vuser10](https://hconnect.hanyang.ac.kr/SW_studio2_2017/team10/edit/master/Screenshot/mysql_vuser10.png)
+2. mysql 만 사용했을때 agent = 1, vuser 99 설정
+3. Arcus 사용했을때 agent = 1, vuser 10 설정
+4. Arcus 사용했을때 agent = 1, vuser 99 설정
